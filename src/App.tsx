@@ -1,17 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
 import Specialists from './pages/Specialists';
 import Hospitals from './pages/Hospitals';
 
-const PrivateRoute = ({ children }) => {
+// Private Route Component
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
+  const location = useLocation();
+
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
 };
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
@@ -48,7 +55,8 @@ function App() {
             </PrivateRoute>
           } 
         />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/users" element={<Navigate to="/users/patients" replace />} />
       </Routes>
     </Router>
   );

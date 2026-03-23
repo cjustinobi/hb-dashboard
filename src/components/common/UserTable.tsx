@@ -2,12 +2,39 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const UserTable = ({ title, tabs, activeTab, columns, data, loading }) => {
+interface Tab {
+  id: string;
+  label: string;
+  path: string;
+}
+
+interface Column<T> {
+  key: string;
+  label: string;
+  render?: (row: T) => React.ReactNode;
+}
+
+interface UserTableProps<T> {
+  tabs: Tab[];
+  activeTab: string;
+  columns: Column<T>[];
+  data: T[];
+  loading: boolean;
+}
+
+const UserTable = <T extends Record<string, any>>({ 
+  tabs, 
+  activeTab, 
+  columns, 
+  data, 
+  loading 
+}: UserTableProps<T>) => {
   const navigate = useNavigate();
   
-  const handleTabChange = (path) => {
+  const handleTabChange = (path: string) => {
     navigate(path);
   };
+
   return (
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
@@ -31,7 +58,7 @@ const UserTable = ({ title, tabs, activeTab, columns, data, loading }) => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
-            placeholder="Search patient by name, email or phone"
+            placeholder="Search..."
             className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-none focus:ring-2 focus:ring-red-500 outline-none text-sm"
           />
         </div>
@@ -58,7 +85,7 @@ const UserTable = ({ title, tabs, activeTab, columns, data, loading }) => {
             ) : data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500">
-                  No users found.
+                   No data found.
                 </td>
               </tr>
             ) : (
@@ -76,14 +103,10 @@ const UserTable = ({ title, tabs, activeTab, columns, data, loading }) => {
         </table>
         
         <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-          <p className="text-xs text-gray-500">Showing 1-10 of 200 patients</p>
+          <p className="text-xs text-gray-500">Showing {data.length > 0 ? '1-10' : '0'} of {data.length} items</p>
           <div className="flex items-center space-x-1">
             <button className="p-2 rounded-md hover:bg-gray-100 text-gray-400"><ChevronLeft size={16} /></button>
             <button className="w-8 h-8 rounded-md bg-red-50 text-red-700 font-bold text-sm">1</button>
-            <button className="w-8 h-8 rounded-md hover:bg-gray-100 text-gray-600 text-sm">2</button>
-            <button className="w-8 h-8 rounded-md hover:bg-gray-100 text-gray-600 text-sm">3</button>
-            <span className="px-2 text-gray-400">...</span>
-             <button className="w-8 h-8 rounded-md hover:bg-gray-100 text-gray-600 text-sm">4</button>
             <button className="p-2 rounded-md hover:bg-gray-100 text-gray-400"><ChevronRight size={16} /></button>
           </div>
         </div>

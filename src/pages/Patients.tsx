@@ -3,9 +3,10 @@ import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import UserTable from '../components/common/UserTable';
 import api from '../services/api';
+import { User } from '../types';
 
-const Patients = () => {
-  const [patients, setPatients] = useState([]);
+const Patients: React.FC = () => {
+  const [patients, setPatients] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   const tabs = [
@@ -15,9 +16,9 @@ const Patients = () => {
   ];
 
   const columns = [
-    { key: 'name', label: 'Name', render: (row) => <span className="font-medium text-gray-900">{row.first_name} {row.last_name}</span> },
+    { key: 'name', label: 'Name', render: (row: User) => <span className="font-medium text-gray-900">{row.first_name} {row.last_name}</span> },
     { key: 'email', label: 'Email' },
-    { key: 'phone', label: 'Phone', render: (row) => row.phone || '+234 803 456 7890' },
+    { key: 'phone', label: 'Phone', render: (row: User) => row.phone || '+234 803 456 7890' },
     { key: 'country', label: 'Country', render: () => 'Nigeria' },
     { key: 'status', label: 'Status', render: () => <span className="px-2 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-md">Active</span> },
     { key: 'actions', label: 'Actions', render: () => <button className="text-blue-600 hover:text-blue-800 font-medium">View Profile</button> },
@@ -30,14 +31,12 @@ const Patients = () => {
         setPatients(response.data.data);
       } catch (err) {
         console.error('Failed to fetch patients', err);
-        // Mock data for display if API fails
         setPatients([
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
-          { first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com' },
+          { id: '1', first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com', role: 'patient' },
+          { id: '2', first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com', role: 'patient' },
+          { id: '3', first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com', role: 'patient' },
+          { id: '4', first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com', role: 'patient' },
+          { id: '5', first_name: 'Adaobi', last_name: 'Nkemdilim', email: 'adaobi.n@email.com', role: 'patient' },
         ]);
       } finally {
         setLoading(false);
