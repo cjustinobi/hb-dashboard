@@ -3,17 +3,11 @@ import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import {
   Users,
-  Stethoscope,
-  Building2,
-  FileText,
-  CheckCircle2, 
   MessageSquareHeart,
-  TrendingUp,
   ArrowUpRight,
   Clock,
   Activity,
   Hospital,
-  ShieldAlert,
   Hexagon,
   Heart
 } from 'lucide-react';
@@ -34,7 +28,7 @@ const STAT_ICONS: Record<string, React.ReactNode> = {
 const STAT_COLORS: Record<string, string> = {
   'Total Users': 'blue',
   'Total Specialists': 'green',
-  'Total Hospitals': 'purple',
+  'Total Hospitals': 'gray',
   'Active Blood Requests': 'red',
   'Pending Verifications': 'orange',
   'Total Donation Count': 'red',
@@ -52,7 +46,6 @@ const StatCardUI: React.FC<StatCardProps> = ({ stat }) => {
   const subLabelStr = stat.sub_label.toLowerCase();
   const isPositive = subLabelStr.includes('%') || subLabelStr.includes('+');
   const isUrgent = subLabelStr.includes('urgent') || subLabelStr.includes('action');
-  const isNeutral = !isPositive && !isUrgent;
 
   const subLabelColor = isPositive ? 'text-green-500' : isUrgent ? 'text-red-500' : 'text-gray-400';
 
@@ -66,11 +59,17 @@ const StatCardUI: React.FC<StatCardProps> = ({ stat }) => {
         <h3 className="text-3xl font-bold text-gray-900 leading-none">
           {stat.value.toLocaleString()} {stat.label.toLowerCase().includes('donation') ? 'Units' : ''}
         </h3>
-        <div className={`mt-3 text-xs font-bold ${subLabelColor}`}>
-          {stat.sub_label}
+        <div className={`mt-3 text-xs font-bold capitalize ${subLabelColor}`}>
+          {stat.label.toLowerCase().includes('donation') || stat.label.toLowerCase().includes('active blood requests') ? '' : stat.sub_label}
         </div>
         {stat.sub_value && (
-          <p className="text-xs text-gray-400 mt-1">{stat.sub_value} {stat.label.toLowerCase().includes('donation') ? 'Donors' : ''}</p>
+          <p className={`text-xs mt-1 ${stat.label.toLowerCase().includes('active blood requests') ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
+            {stat.label.toLowerCase().includes('active blood requests')
+              ? `${stat.sub_value} ${stat.sub_label}`
+              : stat.label.toLowerCase().includes('donation')
+              ? `From ${stat.sub_value} Donors`
+              : stat.sub_value}
+          </p>
         )}
       </div>
     </div>
@@ -131,10 +130,6 @@ const Dashboard: React.FC = () => {
               <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold text-gray-900">Recent Activities</h3>
-                  <button className="text-primary text-sm font-bold hover:underline flex items-center space-x-1">
-                    <span>View All</span>
-                    <ArrowUpRight size={14} />
-                  </button>
                 </div>
                 <div className="space-y-6">
                   {dashboardData.recent_activities.length === 0 && (
@@ -143,12 +138,12 @@ const Dashboard: React.FC = () => {
                   {dashboardData.recent_activities.map((activity: AdminActivity, i: number) => (
                     <div key={i} className="flex items-start space-x-4">
                       <div className="mt-1 flex-shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+                        <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center border border-gray-100">
                           <Clock size={16} className="text-gray-400" />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-900">{activity.title}</p>
+                        <p className="text-sm text-gray-900">{activity.title}</p>
                         <p className="text-xs text-gray-400 mt-1 font-medium">
                           {formatDistanceToNow(activity.created_at)}
                         </p>
