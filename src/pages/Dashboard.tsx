@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
-import { 
-  Users, 
-  Stethoscope, 
-  Building2, 
-  FileText, 
+import {
+  Users,
+  Stethoscope,
+  Building2,
+  FileText,
   CheckCircle2, 
-  HandHeart,
+  MessageSquareHeart,
   TrendingUp,
   ArrowUpRight,
-  Clock
+  Clock,
+  Activity,
+  Hospital,
+  ShieldAlert,
+  Hexagon,
+  Heart
 } from 'lucide-react';
 import api from '../services/api';
 import { AdminDashboardResponse, StatCard as StatCardType, AdminActivity } from '../types';
@@ -18,21 +23,21 @@ import { formatDistanceToNow } from '../utils/time';
 
 // Map stat labels to icons
 const STAT_ICONS: Record<string, React.ReactNode> = {
-  'Total Users': <Users size={24} />,
-  'Total Specialists': <Stethoscope size={24} />,
-  'Total Hospitals': <Building2 size={24} />,
-  'Active Blood Requests': <FileText size={24} />,
-  'Pending Verifications': <CheckCircle2 size={24} />,
-  'Total Donation Count': <HandHeart size={24} />,
+  'Total Users': <Users size={20} />,
+  'Total Specialists': <Activity size={20} />,
+  'Total Hospitals': <Hospital size={20} />,
+  'Active Blood Requests': <Heart size={20} />,
+  'Pending Verifications': <Hexagon size={20} />,
+  'Total Donation Count': <MessageSquareHeart size={20} />,
 };
 
 const STAT_COLORS: Record<string, string> = {
-  'Total Users': 'bg-blue',
-  'Total Specialists': 'bg-purple',
-  'Total Hospitals': 'bg-indigo',
-  'Active Blood Requests': 'bg-red',
-  'Pending Verifications': 'bg-amber',
-  'Total Donation Count': 'bg-emerald',
+  'Total Users': 'blue',
+  'Total Specialists': 'green',
+  'Total Hospitals': 'purple',
+  'Active Blood Requests': 'red',
+  'Pending Verifications': 'orange',
+  'Total Donation Count': 'red',
 };
 
 interface StatCardProps {
@@ -40,29 +45,32 @@ interface StatCardProps {
 }
 
 const StatCardUI: React.FC<StatCardProps> = ({ stat }) => {
-  const icon = STAT_ICONS[stat.label] ?? <Users size={24} />;
-  const colorBase = STAT_COLORS[stat.label] ?? 'bg-gray';
-  const colorClass = `${colorBase}-100`;
-  const textClass = `text-${colorBase}-600`;
+  const icon = STAT_ICONS[stat.label] ?? <Users size={20} />;
+  const color = STAT_COLORS[stat.label] ?? 'gray';
+  
+  // Custom logic for sub-label colors
+  const subLabelStr = stat.sub_label.toLowerCase();
+  const isPositive = subLabelStr.includes('%') || subLabelStr.includes('+');
+  const isUrgent = subLabelStr.includes('urgent') || subLabelStr.includes('action');
+  const isNeutral = !isPositive && !isUrgent;
+
+  const subLabelColor = isPositive ? 'text-green-500' : isUrgent ? 'text-red-500' : 'text-gray-400';
 
   return (
-    <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 group">
-      <div className="flex items-start justify-between">
-        <div className={`p-4 rounded-2xl ${colorClass} transition-transform group-hover:scale-110 duration-300`}>
-          <span className={textClass}>{icon}</span>
-        </div>
-        <div className="flex items-center space-x-1 text-green-500 bg-green-50 px-2 py-1 rounded-full text-xs font-bold">
-          <TrendingUp size={12} />
-          <span>{stat.sub_label}</span>
-        </div>
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 group">
+      <div className={`w-12 h-12 flex items-center justify-center rounded-xl bg-${color}-50 text-${color}-600 mb-4`}>
+        {icon}
       </div>
-      <div className="mt-5">
-        <p className="text-gray-500 text-sm font-medium">{stat.label}</p>
-        <h3 className="text-3xl font-extrabold text-gray-900 mt-1 tracking-tight">
-          {stat.value.toLocaleString()}
+      <div>
+        <p className="text-gray-400 text-sm font-medium mb-1">{stat.label}</p>
+        <h3 className="text-3xl font-bold text-gray-900 leading-none">
+          {stat.value.toLocaleString()} {stat.label.toLowerCase().includes('donation') ? 'Units' : ''}
         </h3>
+        <div className={`mt-3 text-xs font-bold ${subLabelColor}`}>
+          {stat.sub_label}
+        </div>
         {stat.sub_value && (
-          <p className="text-xs text-gray-400 mt-1">{stat.sub_value} {stat.label.toLowerCase().includes('donation') ? 'donors' : ''}</p>
+          <p className="text-xs text-gray-400 mt-1">{stat.sub_value} {stat.label.toLowerCase().includes('donation') ? 'Donors' : ''}</p>
         )}
       </div>
     </div>
@@ -111,7 +119,7 @@ const Dashboard: React.FC = () => {
         {!loading && dashboardData && (
           <div className="p-8 space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {dashboardData.stats.map((stat) => (
                 <StatCardUI key={stat.label} stat={stat} />
               ))}
