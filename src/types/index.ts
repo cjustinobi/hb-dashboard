@@ -18,6 +18,45 @@ export interface AdminUser {
   status: string;  // "Active" | "Pending"
 }
 
+export interface PatientProfile extends AdminUser {
+  blood_type?: string;
+  chronic_illnesses?: string;
+  allergies?: string;
+  medications?: string;
+  existing_conditions?: string;
+  primary_physician?: {
+    id: string;
+    fullname: string;
+    email: string;
+    phone?: string;
+  };
+  hmo_number?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  medical_notes?: string;
+}
+
+export interface AppointmentHistoryItem {
+  specialist_name: string;
+  specialty: string;
+  scheduled_time: string;
+  status: string;
+}
+
+export interface DonationHistoryItem {
+  hospital_name: string;
+  created_at: string;
+  status: string;
+  blood_type?: string;
+  units?: number;
+}
+
+export interface AdminPatientProfileResponse {
+  profile: PatientProfile;
+  appointments: AppointmentHistoryItem[];
+  donations: DonationHistoryItem[];
+}
+
 // ─── Admin Dashboard ───────────────────────────────────────────────────────────
 
 export interface StatCard {

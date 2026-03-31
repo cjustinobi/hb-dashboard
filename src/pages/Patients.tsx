@@ -5,6 +5,7 @@ import UserTable from '../components/common/UserTable';
 import api from '../services/api';
 import { AdminUser, UserListResponse, PaginationMeta } from '../types';
 import { formatDate } from '../utils/time';
+import PatientProfileModal from '../components/modals/PatientProfileModal';
 
 const Patients: React.FC = () => {
   const [patients, setPatients] = useState<AdminUser[]>([]);
@@ -12,6 +13,13 @@ const Patients: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+
+  const handleOpenProfile = (id: string) => {
+    setSelectedPatientId(id);
+    setIsModalOpen(true);
+  };
 
   const tabs = [
     { id: 'patients', label: 'Patients', path: '/users/patients' },
@@ -48,8 +56,13 @@ const Patients: React.FC = () => {
     {
       key: 'actions',
       label: 'Actions',
-      render: (_row: AdminUser) => (
-        <button className="text-blue-600 hover:text-blue-800 font-medium text-xs">View Profile</button>
+      render: (row: AdminUser) => (
+        <button 
+          onClick={() => handleOpenProfile(row.id)}
+          className="text-blue-600 hover:text-blue-800 font-bold text-xs"
+        >
+          View Profile
+        </button>
       ),
     },
   ];
@@ -94,6 +107,12 @@ const Patients: React.FC = () => {
           pagination={pagination ?? undefined}
           onPageChange={setPage}
           onSearch={handleSearch}
+        />
+
+        <PatientProfileModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          patientId={selectedPatientId} 
         />
       </main>
     </div>
