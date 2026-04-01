@@ -6,24 +6,15 @@ import PromptModal from '../modals/PromptModal';
 import ActionSuccessModal from '../modals/ActionSuccessModal';
 import api from '../../services/api';
 
-interface Document {
-  name: string;
-  url: string | null;
-  size?: string;
-  uploadedAt?: string;
-}
-
 interface VerificationCardProps {
   user: AdminUser;
   type: 'specialist' | 'hospital';
-  documents?: Document[];
   onActionComplete: () => void;
 }
 
 const VerificationCard: React.FC<VerificationCardProps> = ({
   user,
   type,
-  documents = [],
   onActionComplete,
 }) => {
   const [rejectModal, setRejectModal] = useState(false);
@@ -34,6 +25,12 @@ const VerificationCard: React.FC<VerificationCardProps> = ({
     type === 'hospital'
       ? `${user.first_name} ${user.last_name}`.trim()
       : `Dr. ${user.first_name} ${user.last_name}`.trim();
+
+  // Build document list from real data
+  const documents =
+    type === 'hospital'
+      ? [{ name: 'Certificate of Registration', url: null }, { name: 'Operating License', url: (user as any).accreditation_doc_url || null }]
+      : [{ name: 'Medical License / Certificate', url: (user as any).license_url || null }];
 
   const handleApprove = async () => {
     setLoading(true);
@@ -126,42 +123,33 @@ const VerificationCard: React.FC<VerificationCardProps> = ({
         <div className="p-5 flex-1">
           <p className="text-sm font-bold text-gray-800 mb-3">Uploaded Documents</p>
           <div className="space-y-2">
-            {documents.length > 0 ? (
-              documents.map((doc, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 bg-blue-50/60 rounded-xl"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <FileText size={16} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">{doc.name}</p>
-                      <p className="text-xs text-gray-400">
-                        {doc.size || '2.4 MB'} · Uploaded {doc.uploadedAt || formatDate(user.created_at)}
-                      </p>
-                    </div>
+            {documents.map((doc, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 bg-blue-50/60 rounded-xl">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <FileText size={16} className="text-white" />
                   </div>
-                  {doc.url ? (
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 text-sm font-semibold hover:underline flex items-center"
-                    >
-                      View <ExternalLink size={12} className="ml-1" />
-                    </a>
-                  ) : (
-                    <span className="text-gray-300 text-sm">N/A</span>
-                  )}
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{doc.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {doc.url ? 'Uploaded document' : 'Not uploaded'} · {formatDate(user.created_at)}
+                    </p>
+                  </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-gray-400 text-sm italic">
-                No documents uploaded.
+                {doc.url ? (
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 text-sm font-semibold hover:underline flex items-center"
+                  >
+                    View <ExternalLink size={12} className="ml-1" />
+                  </a>
+                ) : (
+                  <span className="text-gray-300 text-xs">N/A</span>
+                )}
               </div>
-            )}
+            ))}
           </div>
         </div>
 
@@ -189,7 +177,7 @@ const VerificationCard: React.FC<VerificationCardProps> = ({
         onClose={() => setRejectModal(false)}
         onSubmit={handleReject}
         title="Reject Verification"
-        message={`Please provide a clear reason for rejecting this ${type}'s verification request.`}
+        message={`Provide a clear reason for rejecting this ${type}'s verification request.`}
         placeholder="Reason for rejection..."
         submitText="Reject"
         isDestructive={true}

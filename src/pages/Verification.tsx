@@ -13,19 +13,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'hospitals', label: 'Hospitals' },
 ];
 
-// Helper: Build document list from a single user record
-const buildDocuments = (user: AdminUser, type: Tab) => {
-  const docs = [];
-  if (type === 'specialists') {
-    // Specialists may carry license_url inside extra data — we use image_url as a proxy if present
-    // Render standard expected document slots so the card always shows a consistent layout
-    docs.push({ name: 'Medical License / Certificate', url: null });
-  } else {
-    docs.push({ name: 'Certificate of Registration', url: null });
-    docs.push({ name: 'Operating License', url: null });
-  }
-  return docs;
-};
 
 const Verification: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('specialists');
@@ -135,7 +122,6 @@ const Verification: React.FC = () => {
                   key={user.id}
                   user={user}
                   type={activeTab === 'specialists' ? 'specialist' : 'hospital'}
-                  documents={buildDocuments(user, activeTab)}
                   onActionComplete={fetchItems}
                 />
               ))}

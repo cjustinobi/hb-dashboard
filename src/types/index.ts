@@ -154,3 +154,96 @@ export interface ApiResponse<T> {
   message?: string;
   status?: string;
 }
+
+// ─── Blood Requests ────────────────────────────────────────────────────────────
+
+export interface BloodRequest {
+  id: string;
+  hospital_id: string;
+  donor_id: string | null;
+  recipient_id: string | null;
+  ref_id: string;
+  units: number | null;
+  blood_type: string | null;
+  urgency: string | null;
+  timeline_status: string | null;
+  request_status: string | null;
+  request_reason: string | null;
+  note: string | null;
+  preferred_time: string | null;
+  donated_at: string | null;
+  administered_at: string | null;
+  created_at: string;
+}
+
+export interface BloodRequestUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+}
+
+export interface BloodRequestResponse {
+  blood_request: BloodRequest;
+  donor: BloodRequestUser | null;
+  patient: BloodRequestUser | null;
+}
+
+// ─── Appointments / Donations ──────────────────────────────────────────────────
+
+export interface AppointmentRecord {
+  id: string;
+  blood_request_id: string;
+  hospital_id: string;
+  user_id: string;
+  specialist_id: string;
+  appointment_type: string;
+  status: string;
+  scheduled_time: string;
+  previous_time: string | null;
+  cancelled_by: string | null;
+  cancelled_by_id: string | null;
+  cancelled_reason: string | null;
+  cancelled_at: string | null;
+  created_at: string;
+}
+
+export interface AppointmentHospital {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+  primary_phone: string;
+  address: string;
+}
+
+export interface AppointmentBloodRequest {
+  id: string;
+  units: number | null;
+  blood_type: string | null;
+  urgency: string | null;
+  donated_at: string | null;
+  administered_at: string | null;
+  ref_id: string;
+  request_reason: string | null;
+}
+
+export interface AppointmentUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  country?: string;
+}
+
+export interface AppointmentResponse {
+  appointment: AppointmentRecord;
+  user: AppointmentUser;
+  hospital: AppointmentHospital;
+  blood_request: AppointmentBloodRequest;
+}
