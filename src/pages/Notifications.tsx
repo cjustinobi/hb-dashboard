@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/layout/AdminLayout';
 import api from '../services/api';
 import { NotificationResponse, NotificationCategory, NotificationListResponse } from '../types';
-import { Search, Loader2, Bell, Heart, User, Calendar, Activity, CheckCircle2 } from 'lucide-react';
+import { Search, Loader2, Bell, Heart, User, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from '../utils/time';
 
 type TabType = 'All' | 'Verifications' | 'Blood Requests' | 'Appointments' | 'System';
