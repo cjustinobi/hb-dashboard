@@ -8,6 +8,7 @@ import Hospitals from './pages/Hospitals';
 import Verification from './pages/Verification';
 import BloodRequests from './pages/BloodRequests';
 import Donations from './pages/Donations';
+import Care from './pages/Care';
 
 // Private Route Component
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -79,6 +80,14 @@ const App: React.FC = () => {
           element={
             <PrivateRoute>
               <Donations />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/care" 
+          element={
+            <PrivateRoute>
+              <Care />
             </PrivateRoute>
           } 
         />

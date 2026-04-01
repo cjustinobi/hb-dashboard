@@ -239,6 +239,28 @@ export interface AppointmentUser {
   email: string;
   phone?: string;
   country?: string;
+  gender?: string;
+  dob?: string;
+  consultation_preference?: string;
+}
+
+export interface Specialty {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface Specialist {
+  id: string;
+  user_id: string;
+  hospital_id?: string;
+  specialty_id: string;
+  bio?: string;
+  years_of_experience?: number;
+  consultation_type: string;
+  session_duration_minutes?: number;
+  verified: boolean;
+  suspended: boolean;
 }
 
 export interface AppointmentResponse {
@@ -246,4 +268,7 @@ export interface AppointmentResponse {
   user: AppointmentUser;
   hospital: AppointmentHospital;
   blood_request: AppointmentBloodRequest;
+  specialist: AppointmentUser;
+  specialist_info?: Specialist;
+  specialty?: Specialty;
 }

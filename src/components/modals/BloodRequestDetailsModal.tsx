@@ -62,8 +62,8 @@ const BloodRequestDetailsModal: React.FC<BloodRequestDetailsModalProps> = ({
     setFulfilling(true);
     try {
       await api.put(`/hospitals/blood-request/${br.id}`, {
-        request_status: 'Fulfilled',
-        timeline_status: 'Completed',
+        request_status: 'completed',
+        timeline_status: 'request_fulfilled',
       });
       onFulfilled();
       setSuccessModal(true);

@@ -27,3 +27,14 @@ export function formatDate(isoString: string): string {
     year: 'numeric', month: 'short', day: 'numeric',
   });
 }
+
+export function calculateAge(dob: string): string {
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return `${age} years`;
+}

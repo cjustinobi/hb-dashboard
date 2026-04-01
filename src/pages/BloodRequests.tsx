@@ -11,9 +11,9 @@ type StatusTab = 'Active' | 'Completed' | 'Cancelled';
 const STATUS_TABS: StatusTab[] = ['Active', 'Completed', 'Cancelled'];
 
 const STATUS_MAP: Record<StatusTab, string> = {
-  Active: 'Confirmed',
-  Completed: 'Fulfilled',
-  Cancelled: 'Cancelled',
+  Active: 'confirmed',
+  Completed: 'completed',
+  Cancelled: 'cancelled',
 };
 
 const BLOOD_TYPES = ['All Types', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
