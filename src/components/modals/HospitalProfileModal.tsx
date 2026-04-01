@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '../common/Modal';
 import api from '../../services/api';
-import { AdminHospitalProfileResponse, AdminUserProfileResponse } from '../../types';
+import { AdminHospitalProfileResponse } from '../../types';
 import { Loader2, AlertCircle, Building2, User, Activity } from 'lucide-react';
 
 interface HospitalProfileModalProps {

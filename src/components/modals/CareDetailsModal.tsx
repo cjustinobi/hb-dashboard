@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '../common/Modal';
 import { AppointmentResponse } from '../../types';
 import { formatDate, calculateAge } from '../../utils/time';
-import { User, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 interface CareDetailsModalProps {
   isOpen: boolean;

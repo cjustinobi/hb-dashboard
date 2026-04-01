@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '../common/Modal';
 import api from '../../services/api';
-import { AdminSpecialistProfileResponse, AdminUserProfileResponse } from '../../types';
+import { AdminSpecialistProfileResponse } from '../../types';
 import { Loader2, AlertCircle, User, FileText, ExternalLink } from 'lucide-react';
 
 interface SpecialistProfileModalProps {

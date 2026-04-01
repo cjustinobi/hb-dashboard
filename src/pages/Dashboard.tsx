@@ -4,7 +4,6 @@ import Topbar from '../components/layout/Topbar';
 import {
   Users,
   MessageSquareHeart,
-  ArrowUpRight,
   Clock,
   Activity,
   Hospital,
