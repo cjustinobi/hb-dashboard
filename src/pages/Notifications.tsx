@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/layout/Sidebar';
+import AdminLayout from '../components/layout/AdminLayout';
 import api from '../services/api';
 import { NotificationResponse, NotificationCategory, NotificationListResponse } from '../types';
 import { Search, Loader2, Bell, Heart, User, Calendar, Activity, CheckCircle2 } from 'lucide-react';
@@ -117,13 +117,12 @@ const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      <Sidebar />
-      <main className="flex-1 ml-64 flex flex-col pt-8">
-        <div className="px-10 max-w-6xl w-full mx-auto space-y-8">
+    <AdminLayout>
+      <div className="flex flex-col flex-1 flex flex-col pt-8">
+<div className="px-10 max-w-8xl w-full mx-auto space-y-8">
           
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pl-14 lg:pl-0">
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Notifications</h1>
             <button
               onClick={handleMarkAllAsRead}
@@ -217,9 +216,8 @@ const Notifications: React.FC = () => {
           </div>
 
         </div>
-      </main>
-    </div>
+            </div>
+    </AdminLayout>
   );
 };
-
 export default Notifications;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/layout/Sidebar';
+import AdminLayout from '../components/layout/AdminLayout';
 import Topbar from '../components/layout/Topbar';
 import {
   Users,
@@ -97,9 +97,8 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex bg-gray-50 min-h-screen font-sans">
-      <Sidebar />
-      <main className="flex-1 ml-64 flex flex-col">
+    <AdminLayout>
+      <div className="flex flex-col flex-1 font-sans">
         <Topbar title="Dashboard Overview" />
 
         {loading && (
@@ -182,9 +181,8 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         )}
-      </main>
-    </div>
+            </div>
+    </AdminLayout>
   );
 };
-
 export default Dashboard;

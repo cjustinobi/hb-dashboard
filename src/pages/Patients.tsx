@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Sidebar from '../components/layout/Sidebar';
+import AdminLayout from '../components/layout/AdminLayout';
 import Topbar from '../components/layout/Topbar';
 import UserTable from '../components/common/UserTable';
 import api from '../services/api';
@@ -90,10 +90,9 @@ const Patients: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      <Sidebar />
-      <main className="flex-1 ml-64 flex flex-col">
-        <Topbar title="Patient Management" />
+    <AdminLayout>
+      <div className="flex flex-col flex-1 flex flex-col">
+<Topbar title="Patient Management" />
         <UserTable
           tabs={MANAGEMENT_TABS}
           activeTab="patients"
@@ -110,9 +109,8 @@ const Patients: React.FC = () => {
           onClose={() => setIsModalOpen(false)} 
           patientId={selectedPatientId} 
         />
-      </main>
-    </div>
+            </div>
+    </AdminLayout>
   );
 };
-
 export default Patients;

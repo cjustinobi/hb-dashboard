@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Sidebar from '../components/layout/Sidebar';
+import AdminLayout from '../components/layout/AdminLayout';
 import Topbar from '../components/layout/Topbar';
 import VerificationCard from '../components/verification/VerificationCard';
 import api from '../services/api';
@@ -56,10 +56,9 @@ const Verification: React.FC = () => {
   }, [fetchItems]);
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      <Sidebar />
-      <main className="flex-1 ml-64 flex flex-col">
-        <Topbar title="Verification Center" />
+    <AdminLayout>
+      <div className="flex flex-col flex-1 flex flex-col">
+<Topbar title="Verification Center" />
 
         <div className="flex-1 p-8">
           {/* Tab bar + Search */}
@@ -128,9 +127,8 @@ const Verification: React.FC = () => {
             </div>
           )}
         </div>
-      </main>
-    </div>
+            </div>
+    </AdminLayout>
   );
 };
-
 export default Verification;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Sidebar from '../components/layout/Sidebar';
+import AdminLayout from '../components/layout/AdminLayout';
 import Topbar from '../components/layout/Topbar';
 import api from '../services/api';
 import { AppointmentResponse } from '../types';
@@ -128,10 +128,9 @@ const Care: React.FC = () => {
   };
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      <Sidebar />
-      <main className="flex-1 ml-64 flex flex-col">
-        <Topbar title="Care Appointments" />
+    <AdminLayout>
+      <div className="flex flex-col flex-1 flex flex-col">
+<Topbar title="Care Appointments" />
 
         <div className="flex-1 p-8">
           <div className="flex items-center justify-between mb-6">
@@ -249,31 +248,31 @@ const Care: React.FC = () => {
             )}
           </div>
         </div>
-      </main>
 
-      <CareDetailsModal
-        isOpen={detailsOpen}
-        onClose={() => setDetailsOpen(false)}
-        appointment={selectedAppt}
-      />
+        <CareDetailsModal
+          isOpen={detailsOpen}
+          onClose={() => setDetailsOpen(false)}
+          appointment={selectedAppt}
+        />
 
-      <ConfirmModal
-        isOpen={confirmModal.isOpen}
-        onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
-        onConfirm={executeAction}
-        title={confirmModal.title}
-        message={confirmModal.message}
-        confirmText={confirmModal.action === 'complete' ? 'Mark Complete' : 'Mark Missed'}
-        isDestructive={confirmModal.action === 'cancel'}
-      />
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+          onConfirm={executeAction}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          confirmText={confirmModal.action === 'complete' ? 'Mark Complete' : 'Mark Missed'}
+          isDestructive={confirmModal.action === 'cancel'}
+        />
 
-      <ActionSuccessModal
-        isOpen={successModal.isOpen}
-        onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
-        title={successModal.title}
-        message={successModal.message}
-      />
-    </div>
+        <ActionSuccessModal
+          isOpen={successModal.isOpen}
+          onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+          title={successModal.title}
+          message={successModal.message}
+        />
+      </div>
+    </AdminLayout>
   );
 };
 
