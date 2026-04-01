@@ -16,6 +16,9 @@ export interface AdminUser {
   created_at: string;
   country?: string;
   status: string;  // "Active" | "Pending"
+  verified?: boolean;
+  suspended?: boolean;
+  license_status?: boolean;
 }
 
 export interface PatientProfile extends AdminUser {
@@ -50,6 +53,60 @@ export interface DonationHistoryItem {
   blood_type?: string;
   units?: number;
 }
+
+export interface SpecialistProfile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  specialty: string;
+  bio?: string;
+  experience?: number;
+  country?: string;
+  consultation_types: string;
+  verified: boolean;
+  status: string;
+  license_url?: string;
+}
+
+export interface AdminSpecialistProfileResponse {
+  profile: AdminUser;
+  specialty: string;
+  bio?: string;
+  experience?: number;
+  country?: string;
+  consultation_types: string;
+  verified: boolean;
+  license_url?: string;
+}
+
+export interface HospitalBloodInventorySummary {
+  blood_type: string;
+  units: number;
+}
+
+export interface AdminHospitalProfileResponse {
+  id: string;
+  name: string;
+  hospital_type?: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  primary_phone: string;
+  email?: string;
+  license_status: boolean;
+  contact_person: AdminUser;
+  has_blood_bank: boolean;
+  blood_inventory: HospitalBloodInventorySummary[];
+  total_requests: number;
+}
+
+export type AdminUserProfileResponse = 
+  | { role: 'patient'; data: AdminPatientProfileResponse }
+  | { role: 'specialist'; data: AdminSpecialistProfileResponse }
+  | { role: 'hospital'; data: AdminHospitalProfileResponse };
 
 export interface AdminPatientProfileResponse {
   profile: PatientProfile;

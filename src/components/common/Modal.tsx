@@ -7,6 +7,7 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   width?: string;
+  hideHeader?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -14,7 +15,8 @@ const Modal: React.FC<ModalProps> = ({
   onClose, 
   title, 
   children, 
-  width = 'max-w-2xl' 
+  width = 'max-w-2xl',
+  hideHeader = false,
 }) => {
   // Prevent scrolling when modal is open
   useEffect(() => {
@@ -41,15 +43,17 @@ const Modal: React.FC<ModalProps> = ({
       {/* Modal Container */}
       <div className={`relative bg-white rounded-3xl shadow-2xl w-full ${width} overflow-hidden transform transition-all`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          {title && <h2 className="text-xl font-bold text-gray-900">{title}</h2>}
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
+        {!hideHeader && (
+          <div className="flex items-center justify-between p-6 border-b border-gray-100">
+            {title && <h2 className="text-xl font-bold text-gray-900">{title}</h2>}
+            <button 
+              onClick={onClose}
+              className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        )}
 
         {/* Content */}
         <div className="overflow-y-auto max-h-[80vh]">

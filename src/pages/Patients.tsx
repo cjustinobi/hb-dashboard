@@ -6,6 +6,7 @@ import api from '../services/api';
 import { AdminUser, UserListResponse, PaginationMeta } from '../types';
 import { formatDate } from '../utils/time';
 import PatientProfileModal from '../components/modals/PatientProfileModal';
+import { MANAGEMENT_TABS } from '../constants/navigation';
 
 const Patients: React.FC = () => {
   const [patients, setPatients] = useState<AdminUser[]>([]);
@@ -21,11 +22,6 @@ const Patients: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const tabs = [
-    { id: 'patients', label: 'Patients', path: '/users/patients' },
-    { id: 'specialists', label: 'Specialists', path: '/users/specialists' },
-    { id: 'hospitals', label: 'Hospitals', path: '/users/hospitals' },
-  ];
 
   const columns = [
     {
@@ -99,7 +95,7 @@ const Patients: React.FC = () => {
       <main className="flex-1 ml-64 flex flex-col">
         <Topbar title="Patient Management" />
         <UserTable
-          tabs={tabs}
+          tabs={MANAGEMENT_TABS}
           activeTab="patients"
           columns={columns}
           data={patients}

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
 import Specialists from './pages/Specialists';
 import Hospitals from './pages/Hospitals';
+import Verification from './pages/Verification';
 
 // Private Route Component
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +53,14 @@ const App: React.FC = () => {
           element={
             <PrivateRoute>
               <Hospitals />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/verification" 
+          element={
+            <PrivateRoute>
+              <Verification />
             </PrivateRoute>
           } 
         />

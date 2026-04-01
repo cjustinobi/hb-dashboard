@@ -5,6 +5,13 @@ import UserTable from '../components/common/UserTable';
 import api from '../services/api';
 import { AdminUser, UserListResponse, PaginationMeta } from '../types';
 import { formatDate } from '../utils/time';
+import { MANAGEMENT_TABS } from '../constants/navigation';
+import ActionMenu, { MenuItem } from '../components/common/ActionMenu';
+import { User as UserIcon, CheckCircle, Ban } from 'lucide-react';
+import SpecialistProfileModal from '../components/modals/SpecialistProfileModal';
+import ConfirmModal from '../components/modals/ConfirmModal';
+import PromptModal from '../components/modals/PromptModal';
+import ActionSuccessModal from '../components/modals/ActionSuccessModal';
 
 const Specialists: React.FC = () => {
   const [specialists, setSpecialists] = useState<AdminUser[]>([]);
@@ -12,12 +19,72 @@ const Specialists: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSpecialistId, setSelectedSpecialistId] = useState<string | null>(null);
 
-  const tabs = [
-    { id: 'patients', label: 'Patients', path: '/users/patients' },
-    { id: 'specialists', label: 'Specialists', path: '/users/specialists' },
-    { id: 'hospitals', label: 'Hospitals', path: '/users/hospitals' },
-  ];
+  // Modal states for actions
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, id: '', action: '' });
+  const [promptModal, setPromptModal] = useState({ isOpen: false, id: '', action: '' });
+  const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
+
+  const handleOpenProfile = (id: string) => {
+    setSelectedSpecialistId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleVerify = async (id: string) => {
+    setConfirmModal({ isOpen: true, id, action: 'verify' });
+  };
+
+  const executeVerify = async () => {
+    try {
+      await api.patch(`/admin/specialists/${confirmModal.id}/status`, { verified: true });
+      fetchSpecialists();
+      setSuccessModal({
+        isOpen: true,
+        title: 'Approved Successfully',
+        message: 'This specialist has been approved and is now active on the platform.',
+      });
+    } catch (err) {
+      console.error('Failed to verify specialist', err);
+    }
+  };
+
+  const handleSuspend = async (id: string) => {
+    setPromptModal({ isOpen: true, id, action: 'suspend' });
+  };
+
+  const executeSuspend = async (reason: string) => {
+    try {
+      await api.patch(`/admin/specialists/${promptModal.id}/status`, { suspended: true, reason });
+      fetchSpecialists();
+      setSuccessModal({
+        isOpen: true,
+        title: 'Account Suspended',
+        message: 'This account has been suspended successfully.',
+      });
+    } catch (err) {
+      console.error('Failed to suspend specialist', err);
+    }
+  };
+
+  const handleUnsuspend = async (id: string) => {
+    setConfirmModal({ isOpen: true, id, action: 'unsuspend' });
+  };
+
+  const executeUnsuspend = async () => {
+    try {
+      await api.patch(`/admin/specialists/${confirmModal.id}/status`, { suspended: false });
+      fetchSpecialists();
+      setSuccessModal({
+        isOpen: true,
+        title: 'Suspension Lifted',
+        message: 'This specialist account is no longer suspended.',
+      });
+    } catch (err) {
+      console.error('Failed to unsuspend specialist', err);
+    }
+  };
 
   const columns = [
     {
@@ -33,24 +100,72 @@ const Specialists: React.FC = () => {
       ),
     },
     { key: 'email', label: 'Email' },
+    {
+      key: 'verification',
+      label: 'Verification',
+      render: (row: AdminUser) =>
+        row.verified ? (
+          <span className="px-2 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-md">Verified</span>
+        ) : (
+          <span className="px-2 py-1 bg-gray-50 text-gray-700 text-xs font-bold rounded-md">Unverified</span>
+        ),
+    },
     { key: 'phone', label: 'Phone', render: (row: AdminUser) => row.phone || '—' },
     { key: 'created_at', label: 'Joined', render: (row: AdminUser) => formatDate(row.created_at) },
     {
       key: 'status',
       label: 'Status',
-      render: (row: AdminUser) =>
-        row.status === 'Active' ? (
-          <span className="px-2 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-md">Verified</span>
+      render: (row: AdminUser) => {
+        if (row.suspended) {
+          return <span className="px-2 py-1 bg-red-50 text-red-700 text-xs font-bold rounded-md">Suspended</span>;
+        }
+        return row.status === 'Active' ? (
+          <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-md">Active</span>
         ) : (
           <span className="px-2 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-md">Pending</span>
-        ),
+        );
+      }
     },
     {
       key: 'actions',
       label: 'Actions',
-      render: (_row: AdminUser) => (
-        <button className="text-blue-600 hover:text-blue-800 font-medium text-xs">Review</button>
-      ),
+      render: (row: AdminUser) => {
+        const menuItems: MenuItem[] = [
+          { 
+            label: 'View Profile', 
+            onClick: () => handleOpenProfile(row.id), 
+            icon: <UserIcon size={14} /> 
+          },
+        ];
+
+        // verified is true, or null but status is Active (verified, not suspended)
+        const isVerified = row.verified === true || (row.verified == null && row.status === 'Active');
+        const isSuspended = row.suspended === true;
+
+        if (isVerified && !isSuspended) {
+          menuItems.push({ 
+            label: 'Suspend', 
+            onClick: () => handleSuspend(row.id),
+            icon: <Ban size={14} />,
+            variant: 'danger'
+          });
+        } else if (isSuspended) {
+          menuItems.push({ 
+            label: 'Unsuspend', 
+            onClick: () => handleUnsuspend(row.id),
+            icon: <Ban size={14} />,
+            variant: 'default'
+          });
+        } else {
+          menuItems.push({ 
+            label: 'Verify', 
+            onClick: () => handleVerify(row.id),
+            icon: <CheckCircle size={14} />
+          });
+        }
+
+        return <ActionMenu items={menuItems} />;
+      },
     },
   ];
 
@@ -85,7 +200,7 @@ const Specialists: React.FC = () => {
       <main className="flex-1 ml-64 flex flex-col">
         <Topbar title="Specialist Management" />
         <UserTable
-          tabs={tabs}
+          tabs={MANAGEMENT_TABS}
           activeTab="specialists"
           columns={columns}
           data={specialists}
@@ -93,6 +208,42 @@ const Specialists: React.FC = () => {
           pagination={pagination ?? undefined}
           onPageChange={setPage}
           onSearch={handleSearch}
+        />
+
+        <SpecialistProfileModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          specialistId={selectedSpecialistId} 
+        />
+
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+          onConfirm={confirmModal.action === 'verify' ? executeVerify : executeUnsuspend}
+          title={confirmModal.action === 'verify' ? 'Verify Specialist' : 'Lift Suspension'}
+          message={confirmModal.action === 'verify' 
+            ? 'Are you sure you want to approve this specialist to practice on the platform?'
+            : 'Are you sure you want to lift the suspension for this specialist?'}
+          confirmText={confirmModal.action === 'verify' ? 'Approve' : 'Unsuspend'}
+          isDestructive={false}
+        />
+
+        <PromptModal
+          isOpen={promptModal.isOpen}
+          onClose={() => setPromptModal({ ...promptModal, isOpen: false })}
+          onSubmit={executeSuspend}
+          title="Suspend Specialist"
+          message="Please provide a clear reason for suspending this specialist account."
+          placeholder="Reason for suspension..."
+          submitText="Suspend Account"
+          isDestructive={true}
+        />
+
+        <ActionSuccessModal
+          isOpen={successModal.isOpen}
+          onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+          title={successModal.title}
+          message={successModal.message}
         />
       </main>
     </div>
