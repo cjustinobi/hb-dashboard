@@ -158,14 +158,14 @@ const VerificationCard: React.FC<VerificationCardProps> = ({
           <button
             onClick={handleApprove}
             disabled={loading}
-            className="py-3 bg-green-700 text-white text-sm font-semibold rounded-xl hover:bg-green-800 transition-colors disabled:opacity-50"
+            className="p-1 md:py-3 bg-green-700 text-white text-xs md:text-sm font-semibold rounded-md hover:bg-green-800 transition-colors disabled:opacity-50"
           >
             Approve
           </button>
           <button
             onClick={() => setRejectModal(true)}
             disabled={loading}
-            className="py-3 bg-white border border-red-300 text-red-500 text-sm font-semibold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
+            className="p-1 md:py-3 bg-white border border-red-300 text-red-500 text-xs md:text-sm font-semibold rounded-md hover:bg-red-50 transition-colors disabled:opacity-50"
           >
             Reject With reason
           </button>

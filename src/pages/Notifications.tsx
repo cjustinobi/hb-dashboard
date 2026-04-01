@@ -133,8 +133,8 @@ const Notifications: React.FC = () => {
           </div>
 
           {/* Filters & Search */}
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1.5 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1.5 shadow-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
               {TABS.map((tab) => (
                 <button
                   key={tab}
@@ -153,7 +153,7 @@ const Notifications: React.FC = () => {
               ))}
             </div>
 
-            <div className="relative w-[340px]">
+            <div className="relative w-full md:w-80">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"

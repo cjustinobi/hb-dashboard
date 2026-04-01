@@ -197,7 +197,7 @@ const Specialists: React.FC = () => {
   return (
     <AdminLayout>
       <div className="flex flex-col flex-1 flex flex-col">
-<Topbar title="Specialist Management" />
+        <Topbar title="Specialist Management" />
         <UserTable
           tabs={MANAGEMENT_TABS}
           activeTab="specialists"

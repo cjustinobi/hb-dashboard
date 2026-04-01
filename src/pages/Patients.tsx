@@ -92,7 +92,7 @@ const Patients: React.FC = () => {
   return (
     <AdminLayout>
       <div className="flex flex-col flex-1 flex flex-col">
-<Topbar title="Patient Management" />
+        <Topbar title="Patient Management" />
         <UserTable
           tabs={MANAGEMENT_TABS}
           activeTab="patients"

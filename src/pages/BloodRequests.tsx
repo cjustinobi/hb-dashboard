@@ -98,8 +98,8 @@ const BloodRequests: React.FC = () => {
 
         <div className="flex-1 p-8">
           {/* Top controls: tabs + search */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1 shadow-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
               {STATUS_TABS.map((tab) => (
                 <button
                   key={tab}
@@ -115,13 +115,13 @@ const BloodRequests: React.FC = () => {
               ))}
             </div>
 
-            <div className="relative w-80">
+            <div className="relative w-full sm:w-80">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search patient by name, email or phone"
+                placeholder="Search patient..."
                 className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-red-400 transition-all"
               />
             </div>
@@ -130,7 +130,7 @@ const BloodRequests: React.FC = () => {
           {/* Filter panel */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6 space-y-4">
             {/* Hospital search */}
-            <div className="relative w-72">
+            <div className="relative w-full md:w-72">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
@@ -142,7 +142,7 @@ const BloodRequests: React.FC = () => {
             </div>
 
             {/* Dropdowns */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-400 mb-1.5">Blood Type</label>
                 <div className="relative">
@@ -185,68 +185,70 @@ const BloodRequests: React.FC = () => {
                 <p className="text-base font-semibold">No blood requests found</p>
               </div>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Request ID</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Hospital Name</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Blood Type</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Units Needed</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Urgency</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Donors Matched</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Status</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {filteredRequests.map((req) => {
-                    const br = req.blood_request;
-                    const hospName = req.patient
-                      ? `${req.patient.first_name} ${req.patient.last_name}`
-                      : 'Unknown Hospital';
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Request ID</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Hospital Name</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Blood Type</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Units Needed</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Urgency</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Donors Matched</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Status</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {filteredRequests.map((req) => {
+                      const br = req.blood_request;
+                      const hospName = req.patient
+                        ? `${req.patient.first_name} ${req.patient.last_name}`
+                        : 'Unknown Hospital';
 
-                    return (
-                      <tr key={br.id} className="hover:bg-gray-50/60 transition-colors">
-                        <td className="px-6 py-4 font-mono text-xs text-gray-500">
-                          {br.ref_id ? `HB-${br.ref_id.slice(0, 8).toUpperCase()}` : '—'}
-                        </td>
-                        <td className="px-6 py-4 font-medium text-gray-900">{hospName}</td>
-                        <td className="px-6 py-4">
-                          {br.blood_type ? (
-                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${bloodTypeStyle}`}>
-                              {br.blood_type}
+                      return (
+                        <tr key={br.id} className="hover:bg-gray-50/60 transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs text-gray-500 whitespace-nowrap">
+                            {br.ref_id ? `HB-${br.ref_id.slice(0, 8).toUpperCase()}` : '—'}
+                          </td>
+                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{hospName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {br.blood_type ? (
+                              <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${bloodTypeStyle}`}>
+                                {br.blood_type}
+                              </span>
+                            ) : '—'}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">{br.units ? `${br.units} Units` : '—'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {br.urgency ? (
+                              <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${urgencyStyle(br.urgency)}`}>
+                                {br.urgency}
+                              </span>
+                            ) : '—'}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">
+                            {req.donor ? `1 of ${br.units || 1}` : `0 of ${br.units || 1}`}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${statusBadge(br.request_status)}`}>
+                              {activeTab}
                             </span>
-                          ) : '—'}
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">{br.units ? `${br.units} Units` : '—'}</td>
-                        <td className="px-6 py-4">
-                          {br.urgency ? (
-                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${urgencyStyle(br.urgency)}`}>
-                              {br.urgency}
-                            </span>
-                          ) : '—'}
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          {req.donor ? `1 of ${br.units || 1}` : `0 of ${br.units || 1}`}
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${statusBadge(br.request_status)}`}>
-                            {activeTab}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() => handleViewRequest(req)}
-                            className="text-red-600 text-sm font-semibold hover:text-red-700 transition-colors"
-                          >
-                            View Request
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <button
+                              onClick={() => handleViewRequest(req)}
+                              className="text-red-600 text-sm font-semibold hover:text-red-700 transition-colors"
+                            >
+                              View Request
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>

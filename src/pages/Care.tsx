@@ -133,8 +133,8 @@ const Care: React.FC = () => {
 <Topbar title="Care Appointments" />
 
         <div className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center bg-white border border-gray-100 rounded-xl p-1 shadow-sm overflow-x-auto whitespace-nowrap scrollbar-hide">
               {STATUS_TABS.map((tab) => (
                 <button
                   key={tab}
@@ -150,19 +150,19 @@ const Care: React.FC = () => {
               ))}
             </div>
 
-            <div className="relative w-80">
+            <div className="relative w-full sm:w-80">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search patient by name, email or phone"
+                placeholder="Search patient..."
                 className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-red-400 transition-all"
               />
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             {loading ? (
               <div className="flex flex-col items-center justify-center h-64 space-y-4 text-gray-400">
                 <Loader2 size={40} className="animate-spin text-red-600" />
@@ -176,75 +176,77 @@ const Care: React.FC = () => {
                 </p>
               </div>
             ) : (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-100">
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Patient Name</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Specialist Name</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Date & Time</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Consultation Type</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Status</th>
-                    <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {filtered.map((item) => {
-                    const { appointment: appt, user, specialist, specialist_info } = item;
-                    const badge = statusBadge(appt.status);
-                    const cBadge = consultationBadge(specialist_info?.consultation_type);
-                    const isUpcoming = activeTab === 'Upcoming';
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Patient Name</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Specialist Name</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Date & Time</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Consultation Type</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Status</th>
+                      <th className="text-left px-6 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {filtered.map((item) => {
+                      const { appointment: appt, user, specialist, specialist_info } = item;
+                      const badge = statusBadge(appt.status);
+                      const cBadge = consultationBadge(specialist_info?.consultation_type);
+                      const isUpcoming = activeTab === 'Upcoming';
 
-                    const menuItems: MenuItem[] = [
-                      {
-                        label: 'View',
-                        icon: <Eye size={14} />,
-                        onClick: () => { setSelectedAppt(item); setDetailsOpen(true); },
-                      },
-                    ];
-
-                    if (isUpcoming) {
-                      menuItems.push(
+                      const menuItems: MenuItem[] = [
                         {
-                          label: 'Mark Complete',
-                          icon: <CheckCircle size={14} />,
-                          onClick: () => handleMarkComplete(appt.id),
+                          label: 'View',
+                          icon: <Eye size={14} />,
+                          onClick: () => { setSelectedAppt(item); setDetailsOpen(true); },
                         },
-                        {
-                          label: 'Mark Missed',
-                          icon: <XCircle size={14} />,
-                          variant: 'danger',
-                          onClick: () => handleMarkMissed(appt.id),
-                        }
-                      );
-                    }
+                      ];
 
-                    return (
-                      <tr key={appt.id} className="hover:bg-gray-50/60 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-900">
-                          {user.first_name} {user.last_name}
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          Dr. {specialist.first_name} {specialist.last_name}
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">{formatDate(appt.scheduled_time)}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${cBadge.cls}`}>
-                            {cBadge.label}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${badge.cls}`}>
-                            {badge.label}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <ActionMenu items={menuItems} />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      if (isUpcoming) {
+                        menuItems.push(
+                          {
+                            label: 'Mark Complete',
+                            icon: <CheckCircle size={14} />,
+                            onClick: () => handleMarkComplete(appt.id),
+                          },
+                          {
+                            label: 'Mark Missed',
+                            icon: <XCircle size={14} />,
+                            variant: 'danger',
+                            onClick: () => handleMarkMissed(appt.id),
+                          }
+                        );
+                      }
+
+                      return (
+                        <tr key={appt.id} className="hover:bg-gray-50/60 transition-colors">
+                          <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            {user.first_name} {user.last_name}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">
+                            Dr. {specialist.first_name} {specialist.last_name}
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">{formatDate(appt.scheduled_time)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${cBadge.cls}`}>
+                              {cBadge.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${badge.cls}`}>
+                              {badge.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <ActionMenu items={menuItems} />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>

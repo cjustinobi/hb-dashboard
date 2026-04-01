@@ -49,8 +49,8 @@ const UserTable = <T extends Record<string, any>>({
 
   return (
     <div className="p-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -66,11 +66,11 @@ const UserTable = <T extends Record<string, any>>({
           ))}
         </div>
 
-        <div className="relative w-80">
+        <div className="relative w-full sm:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
-            placeholder="Search by name, email or phone..."
+            placeholder="Search..."
             value={searchInput}
             onChange={handleSearchChange}
             className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-none focus:ring-2 focus:ring-red-500 outline-none text-sm"
@@ -79,44 +79,46 @@ const UserTable = <T extends Record<string, any>>({
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              {columns.map((col) => (
-                <th key={col.key} className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {col.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center">
-                  <div className="flex justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  </div>
-                </td>
+                {columns.map((col) => (
+                  <th key={col.key} className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    {col.label}
+                  </th>
+                ))}
               </tr>
-            ) : data.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400 text-sm">
-                  No records found.
-                </td>
-              </tr>
-            ) : (
-              data.map((row, i) => (
-                <tr key={i} className="hover:bg-gray-50 transition-colors">
-                  {columns.map((col) => (
-                    <td key={col.key} className="px-6 py-4 text-sm text-gray-700">
-                      {col.render ? col.render(row) : row[col.key]}
-                    </td>
-                  ))}
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length} className="px-6 py-12 text-center">
+                    <div className="flex justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-700"></div>
+                    </div>
+                  </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : data.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400 text-sm">
+                    No records found.
+                  </td>
+                </tr>
+              ) : (
+                data.map((row, i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    {columns.map((col) => (
+                      <td key={col.key} className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                        {col.render ? col.render(row) : row[col.key]}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination */}
         {pagination && (
