@@ -48,7 +48,7 @@ const Login: React.FC = () => {
             </div>
           </div>
           <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Admin Login</h2>
-          <p className="mt-2 text-sm text-gray-500 font-medium">Welcome back to HealthBridge Dashboard</p>
+          <p className="mt-2 text-sm text-gray-500 font-medium">Welcome back to RubiMedi Health</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

@@ -36,9 +36,9 @@ const Sidebar: React.FC = () => {
     <aside className="fixed left-0 top-0 h-screen w-64 bg-secondary text-gray-400 p-6 flex flex-col z-20">
       <div className="flex items-center space-x-2 mb-10 px-2">
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-xl">H</span>
+          <span className="text-white font-bold text-xl">RH</span>
         </div>
-        <span className="text-white font-bold text-lg tracking-tight">AmeblissHealth</span>
+        <span className="text-white font-bold text-lg tracking-tight">RubiMedi Health</span>
       </div>
 
       <nav className="flex-1 space-y-2">
