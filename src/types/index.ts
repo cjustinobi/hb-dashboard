@@ -272,3 +272,27 @@ export interface AppointmentResponse {
   specialist_info?: Specialist;
   specialty?: Specialty;
 }
+
+// ─── Notifications ─────────────────────────────────────────────────────────────
+
+export type NotificationCategory = 'verification' | 'blood_request' | 'appointment' | 'system';
+
+export interface NotificationResponse {
+  id: string;
+  user_id: string;
+  category: NotificationCategory;
+  title: string;
+  message: string;
+  related_id?: string;
+  related_type?: string;
+  metadata?: string;
+  is_read: boolean;
+  created_by?: string;
+  created_at: string;
+  read_at?: string;
+}
+
+export interface NotificationListResponse {
+  data: NotificationResponse[];
+  pagination: PaginationMeta & { unread_count: number };
+}

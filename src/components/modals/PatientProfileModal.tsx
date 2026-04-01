@@ -21,8 +21,15 @@ const PatientProfileModal: React.FC<PatientProfileModalProps> = ({ isOpen, onClo
     setLoading(true);
     setError('');
     try {
-      const response = await api.get<{ data: AdminPatientProfileResponse }>(`/admin/users/${patientId}`);
-      setData(response.data.data);
+      const response = await api.get<{ data: any }>(`/admin/users/${patientId}`);
+      const payload = response.data.data;
+      
+      let patientData = payload;
+      if (payload?.role === 'patient' && payload?.data) {
+        patientData = payload.data;
+      }
+      
+      setData(patientData);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch patient profile');
       console.error('Fetch profile error:', err);
