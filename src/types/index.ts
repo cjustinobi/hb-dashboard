@@ -296,3 +296,28 @@ export interface NotificationListResponse {
   data: NotificationResponse[];
   pagination: PaginationMeta & { unread_count: number };
 }
+
+// ─── Consultations ────────────────────────────────────────────────────────────
+
+export interface ConsultationType {
+  id: string;
+  name: string;
+  description?: string;
+  duration_minutes: number;
+  base_price: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ConsultationBenefit {
+  id: string;
+  title: string;
+  description?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ConsultationTypeBenefit {
+  consultation_type_id: string;
+  consultation_benefit_id: string;
+}
