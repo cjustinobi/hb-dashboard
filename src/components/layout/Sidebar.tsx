@@ -13,7 +13,6 @@ import {
   X,
   ChevronDown,
   ChevronRight,
-  Database
 } from 'lucide-react';
 
 interface SidebarProps {
